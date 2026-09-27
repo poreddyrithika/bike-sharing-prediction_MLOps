@@ -1,0 +1,8 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+statsmodels
+joblib
+mlflow
+pandera

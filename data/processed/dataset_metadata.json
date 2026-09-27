@@ -1,0 +1,26 @@
+{
+    "dataset_name": "Bike Sharing Demand",
+    "train_shape": [
+        584,
+        36
+    ],
+    "test_shape": [
+        147,
+        36
+    ],
+    "numerical_features": [
+        "temp",
+        "atemp",
+        "hum",
+        "windspeed"
+    ],
+    "categorical_features": [
+        "season",
+        "yr",
+        "mnth",
+        "holiday",
+        "weekday",
+        "workingday",
+        "weathersit"
+    ]
+}
