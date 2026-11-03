@@ -1,12 +1,31 @@
 {
-    "dataset_name": "Bike Sharing Demand",
-    "train_shape": [
+    "dataset_name": "Bike Sharing Demand (daily)",
+    "target_column": "cnt",
+    "raw_dataset_rows": 731,
+    "raw_dataset_sha256": "a6bcf826782d3c0fbfdcbeead17cd0884185a0dafe8ff10cd48a874ee7ba18be",
+    "train_shape_raw": [
         584,
-        36
+        11
     ],
-    "test_shape": [
+    "test_shape_raw": [
         147,
-        36
+        11
+    ],
+    "train_shape_transformed": [
+        584,
+        38
+    ],
+    "test_shape_transformed": [
+        147,
+        38
+    ],
+    "train_period": [
+        "2011-01-01",
+        "2012-08-06"
+    ],
+    "test_period": [
+        "2012-08-07",
+        "2012-12-31"
     ],
     "numerical_features": [
         "temp",
@@ -22,5 +41,8 @@
         "weekday",
         "workingday",
         "weathersit"
-    ]
+    ],
+    "split_strategy": "chronological fixed hold-out",
+    "fixed_test_set": true,
+    "test_instants_path": "data/processed\\test_instants.csv"
 }
