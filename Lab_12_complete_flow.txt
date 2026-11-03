@@ -1,0 +1,4 @@
+1. python src\mlops_pipeline\bike_demand_pipeline.py --force        (Production model v1 + deployment bundle)
+2. python pipelines\run_lab12_monitoring.py                          (drift datasets + data/prediction/concept drift + trend)
+3. (optional) start the API, call /predict, then 12_prediction_monitoring.py / 12_request_history.py / 12_api_performance_monitoring.py
+4. python pipelines\run_lab12_retraining.py                          (post-drift batch -> V2 -> compare -> Staging -> lifecycle)

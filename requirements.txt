@@ -1,0 +1,21 @@
+# Core data / ML
+numpy
+pandas
+scipy
+scikit-learn
+statsmodels
+matplotlib
+joblib
+PyYAML
+
+# MLOps
+mlflow
+skops
+pandera
+
+# Serving + tests
+fastapi
+uvicorn
+pydantic
+httpx
+pytest

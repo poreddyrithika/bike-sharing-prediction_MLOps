@@ -1,0 +1,12 @@
+docker build -t bike-sharing-api:1.0 .
+docker images
+docker run -p 8000:8000 bike-sharing-api:1.0
+docker ps ; docker logs <container>
+curl http://localhost:8000/health
+kubectl cluster-info ; kubectl get nodes
+kubectl apply -f k8s/deployment.yaml ; kubectl apply -f k8s/service.yaml
+kubectl get deployments ; kubectl get pods ; kubectl describe deployment bike-api
+kubectl get service bike-api-service      # NodePort -> http://localhost:<nodeport>/docs
+kubectl scale deployment bike-api --replicas=3
+kubectl set image deployment/bike-api bike-api=bike-sharing-api:model-v1
+kubectl rollout status deployment/bike-api ; kubectl rollout undo deployment/bike-api

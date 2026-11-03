@@ -1,0 +1,14 @@
+Lab 10 - API build stages
+
+Stage 1  Basic FastAPI app                  DONE
+Stage 2  /health (503 when model missing)   DONE
+Stage 3  ModelLoader (deployment bundle)    DONE
+Stage 4  /metadata                          DONE
+Stage 5  /predict                           DONE
+Stage 6  Pydantic input/output schemas      DONE
+Stage 7  Validation + standardized errors   DONE (422 / 503 / 500 share one JSON shape)
+Stage 8  Batch prediction                   DONE
+Stage 9  API tests                          tests/test_api.py
+Stage 10 Invalid / extreme / corrupted input tests/test_api.py
+Stage 11 Performance + reliability          tests/test_performance.py
+Stage 12 Reports + documentation            docs/ and reports/

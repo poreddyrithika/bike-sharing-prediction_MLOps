@@ -1,0 +1,7 @@
+Lab 13 checklist
+[ ] Pipeline already run once with --force (Production model exists, drift datasets exist)
+[ ] copy data\raw\new_bike.csv.staged data\raw\new_bike.csv       (do NOT run 01_load_data.py by hand first: it would consume the batch)
+[ ] Docker Desktop + Kubernetes running (or $env:SKIP_DEPLOYMENT="1")
+[ ] python src\mlops_pipeline\12_monitor_trigger.py               (or run the GitHub workflow "Lab 13 - End-to-End MLOps")
+[ ] read outputs\monitoring\monitor_trigger_report.json and reports\lifecycle_report.json
+[ ] run the trigger again: the batch must be skipped (idempotence)

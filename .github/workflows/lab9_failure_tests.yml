@@ -1,0 +1,31 @@
+name: Lab 9 - Failure and Recovery Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  failure-tests:
+    runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      SKIP_DEPLOYMENT: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Build the normal pipeline first
+        run: python src/mlops_pipeline/bike_demand_pipeline.py --force
+      - name: Run failure and recovery tests
+        run: python src/mlops_pipeline/10_failure_injection.py
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab9-failure-tests-${{ github.run_number }}
+          path: |
+            reports/**
+            artifacts/**
+            logs/**
+          if-no-files-found: ignore

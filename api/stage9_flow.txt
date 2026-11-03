@@ -1,0 +1,2 @@
+Stage 9 flow: pytest -> TestClient(app) -> lifespan loads deployment/ bundle -> request -> pydantic validation
+-> clean_prediction_data -> preprocessor.transform -> model.predict -> clip >= 0 -> JSON + inference log

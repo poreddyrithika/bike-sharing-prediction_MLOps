@@ -1,0 +1,9 @@
+# Serving-only dependencies installed in the Docker image.
+# numpy / pandas / scikit-learn / joblib are NOT listed here on purpose:
+# deployment/requirements-model.txt (written by 11_prepare_deployment.py) pins
+# them to the exact versions the model was trained with, so the pickled model
+# loads identically inside the container.
+fastapi
+uvicorn
+pydantic
+PyYAML

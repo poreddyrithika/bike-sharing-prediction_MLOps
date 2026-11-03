@@ -1,0 +1,84 @@
+# Bike Sharing Demand - MLOps configuration (Labs 7-13)
+# Every pipeline stage in src/mlops_pipeline/ reads this file.
+# Run all commands from the project root (the folder that contains this file).
+
+data:
+  raw_path: data/raw/day.csv
+  new_batch_path: data/raw/new_bike.csv      # incoming batch (Lab 13). Not present until you stage it.
+  processed_dir: data/processed
+  target_column: cnt
+  id_column: instant                          # unique, strictly increasing day index
+  date_column: dteday
+  leakage_columns: [casual, registered]       # casual + registered == cnt, so they must never be features
+
+features:
+  numerical: [temp, atemp, hum, windspeed]
+  categorical: [season, yr, mnth, holiday, weekday, workingday, weathersit]
+  # Fixed category lists keep the transformed feature space identical across
+  # model versions (yr=2 is used by incoming 2013 data).
+  categories:
+    season: [1, 2, 3, 4]
+    yr: [0, 1, 2]
+    mnth: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    holiday: [0, 1]
+    weekday: [0, 1, 2, 3, 4, 5, 6]
+    workingday: [0, 1]
+    weathersit: [1, 2, 3, 4]
+
+split:
+  # Chronological, fixed hold-out. The last 20% of the ORIGINAL 731 days
+  # (instant 585..731) is the permanent test set; ingested batches only ever
+  # extend the training set. This keeps metrics of different model versions
+  # comparable (required for champion/challenger decisions).
+  baseline_rows: 731
+  test_fraction: 0.2
+
+model:
+  n_estimators: 200
+  learning_rate: 0.05
+  max_depth: 3
+  random_state: 42
+
+mlflow:
+  # Leave empty for local MLflow (sqlite:///mlflow.db in the project root).
+  # For CI or a shared server set the MLFLOW_TRACKING_URI environment variable.
+  tracking_uri: ""
+  experiment_name: Bike_Sharing_Demand_Pipeline
+
+registry:
+  model_name: Bike_Sharing_Production_Model
+  decision_metric: rmse
+  direction: lower_is_better
+  min_improvement: 0.0          # candidate must beat Production RMSE by more than this
+
+quality_gate:
+  metric: r2_score
+  direction: higher_is_better
+  minimum_value: 0.60
+
+deployment:
+  image_name: bike-sharing-api
+  # Set SKIP_DEPLOYMENT=1 in the environment (CI does this) to build the
+  # deployment bundle without calling docker / kubectl.
+
+monitoring:
+  ks_threshold: 0.10                    # KS statistic >= threshold -> DRIFT (numerical + prediction)
+  js_threshold: 0.10                    # Jensen-Shannon divergence >= threshold -> DRIFT (categorical)
+  concept_rmse_increase_pct: 10.0       # RMSE/MAE rising by >= this % counts as degradation
+  concept_r2_drop: 0.05                 # R2 falling by >= this (absolute) counts as degradation
+  numerical_columns: [temp, atemp, hum, windspeed]
+  categorical_columns: [season, weathersit, workingday, mnth]
+  post_drift_batch_size: 200
+  random_seed: 42
+
+lab9:
+  repetitions: 3
+
+paths:
+  preprocessor: models/preprocessor.pkl
+  model: models/bike_model.pkl
+  evaluation_report: reports/evaluation_report.json
+  quality_gate_report: reports/quality_gate_report.json
+  lifecycle_report: reports/lifecycle_report.json
+  failure_report: reports/failure_report.json
+  inference_output: outputs/inference_predictions.csv

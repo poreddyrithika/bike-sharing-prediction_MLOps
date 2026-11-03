@@ -1,0 +1,38 @@
+name: Lab 13 - End-to-End MLOps
+# Runs on YOUR machine (self-hosted runner) because it needs the local MLflow store, Docker and Kubernetes.
+# One-time setup: GitHub repo -> Settings -> Secrets and variables -> Actions -> Variables
+#   BIKE_PROJECT_DIR = full path of this project, e.g. C:\Users\you\bike-sharing
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "47 0 * * *"   # 00:47 UTC = 06:17 IST, daily
+
+jobs:
+  mlops-monitoring:
+    runs-on: [self-hosted, Windows, X64]
+    env:
+      PROJECT_DIR: ${{ vars.BIKE_PROJECT_DIR }}
+    steps:
+      - name: Run MLOps monitoring trigger
+        shell: powershell
+        run: |
+          if (-not $env:PROJECT_DIR) { throw "Set the repository variable BIKE_PROJECT_DIR first." }
+          Set-Location $env:PROJECT_DIR
+          & ".\venv\Scripts\python.exe" ".\src\mlops_pipeline\12_monitor_trigger.py"
+
+      - name: Show monitoring result
+        shell: powershell
+        run: |
+          Set-Location $env:PROJECT_DIR
+          if (Test-Path ".\outputs\monitoring\monitor_trigger_report.json") {
+              Get-Content ".\outputs\monitoring\monitor_trigger_report.json"
+          } else {
+              Write-Host "Monitoring report was not generated."
+          }
+
+      - name: Verify Kubernetes
+        shell: powershell
+        run: |
+          kubectl get deployment bike-api
+          kubectl get pods
