@@ -1,0 +1,23 @@
+{
+    "model_name": "Bike_Sharing_Production_Model",
+    "model_version": "2",
+    "model_stage": "Production",
+    "run_id": "56aeaf8d79884dcd8617efb7d61103ca",
+    "model_source": "models:/m-170e6ea8690543eea7c983d52f8606c2",
+    "preprocessor_artifact": "preprocessing_pipeline/preprocessor.pkl",
+    "metrics": {
+        "mae": 937.5301,
+        "mse": 1187451.3489,
+        "rmse": 1089.7024,
+        "r2_score": 0.6621
+    },
+    "source": "MLflow",
+    "created_at": "2026-11-04T13:39:20.554062+00:00",
+    "runtime": {
+        "python": "3.13.12",
+        "scikit_learn": "1.9.1",
+        "numpy": "2.5.4",
+        "pandas": "3.1.0",
+        "scipy": "1.18.1"
+    }
+}

@@ -12,7 +12,7 @@ import mlflow.sklearn
 import numpy as np
 import pandas as pd
 
-from common import PROJECT_ROOT, load_config
+from common import PROJECT_ROOT, get_production_version, load_config
 from mlflow_utils import configure_mlflow
 
 
@@ -104,10 +104,27 @@ def test_missing_model_with_recovery(config):
     try:
         detected = run_script("src/mlops_pipeline/06_model_evaluation.py") != 0
         configure_mlflow(config)
-        model = mlflow.sklearn.load_model(f"models:/{config['registry']['model_name']}/Production")
+        client = mlflow.tracking.MlflowClient()
+        production = get_production_version(client, config["registry"]["model_name"])
+        if production is None:
+            raise RuntimeError(f"No Production version found for '{config['registry']['model_name']}'.")
+
+        model = mlflow.sklearn.load_model(
+            f"models:/{config['registry']['model_name']}/{production.version}"
+        )
+        preprocessor_path = client.download_artifacts(
+            production.run_id, "preprocessing_pipeline/preprocessor.pkl"
+        )
+        preprocessor = joblib.load(preprocessor_path)
         model_path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump(model, model_path)
-        recovered = run_script("src/mlops_pipeline/06_model_evaluation.py") == 0
+        X_test_raw = pd.read_csv(
+            PROJECT_ROOT / config["data"]["processed_dir"] / "X_test_raw.csv"
+        )
+        predictions = model.predict(preprocessor.transform(X_test_raw))
+        recovered = bool(len(predictions) == len(X_test_raw) and np.isfinite(predictions).all())
+        if not recovered:
+            print("[ERROR] Recovered Production model returned invalid predictions.")
         return {"scenario": "missing_model_artifact", "expected": "RECOVER",
                 "actual": "RECOVERED" if detected and recovered else "RECOVERY_FAILED",
                 "failure_detected": detected, "recovery_succeeded": recovered, "passed": detected and recovered}

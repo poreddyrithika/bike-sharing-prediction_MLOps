@@ -33,3 +33,11 @@ mlflow.db
 # Secrets
 .env
 .env.*
+
+# Additional generated MLOps artifacts
+mlflow_backup.db
+mlflow_lab4.db
+data/raw/archive/
+deployment/model.pkl
+deployment/preprocessor.pkl
+model_comparison_results.csv

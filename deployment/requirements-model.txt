@@ -1,0 +1,5 @@
+# Written by 11_prepare_deployment.py: exact versions the model was trained with.
+scikit-learn==1.9.1
+numpy==2.5.4
+pandas==3.1.0
+joblib==1.6.0
